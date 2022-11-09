@@ -7,6 +7,11 @@
 #define MAX_CHAR 200
 #define MAX_TAB 10
 #define MAX_VILLE 10
+#define RAGE_QUIT(msg)                \
+    {                                 \
+        fprintf(stderr, "%s\n", msg); \
+        exit(EXIT_FAILURE);           \
+    }
 
 /*
 Définissez les types et les variables nécessaires pour représenter les éléments

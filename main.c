@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "reseau.h"
 #include "struct.h"
 
 tab_personnes *init_tab_personnes() {
@@ -15,5 +16,6 @@ int main() {
     char *villes[MAX_VILLE];
     int distance_villes[MAX_VILLE][MAX_VILLE];
     tab_personnes *tab_p = init_tab_personnes();
+    printf("la fin\n");
     return EXIT_SUCCESS;
 }
