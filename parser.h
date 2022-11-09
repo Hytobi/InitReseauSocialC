@@ -28,6 +28,7 @@ void parsePersonne(char *personneInfo, tab_personnes *tab_p);
     écrire une fonction parseVille qui prend une chaîne en entrée
     (de type : (lille,22,lens),) qui met à jour la matrice distancesVilles.
 */
+int chercheIndVille(char *ville, char *villes[MAX_VILLE]);
 void parseVille(char *distVilleInfo, char *villes[MAX_VILLE],
                 int distancesVilles[MAX_VILLE][MAX_VILLE]);
 

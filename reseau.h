@@ -24,6 +24,9 @@ void ajoute_abo(Personne *p1, Personne *p2);
 void enleve_abo(Personne *p1, Personne *p2);
 
 // afficher une personne : son nom, sa ville, le nom des personnes qu'il suit.
-void print_personne(Personne *p);
+void afficher_tab_personnes(tab_personnes *tab_p);
+
+// Distance entre p1 et p2
+int distance_personne(Personne *p1, Personne *p2);
 
 #endif
