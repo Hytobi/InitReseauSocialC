@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "reseau.h"
 #include "struct.h"
 
 int estSeparateur(char c) {
-    return c == '[' || c == ']' || c == ',' || c == ' ' || c == '{' || c == '}';
+    return c == '[' || c == ']' || c == ',' || c == ' ' || c == '{' ||
+           c == '}' || c == '(' || c == ')' || c == '\n' || c == '\0';
 }
 
 /*
@@ -15,26 +17,28 @@ int estSeparateur(char c) {
     (exemple : [kevin,karim,alice,paul,charlotte,gabriel,dalila],)
     et créé puis commence à remplir le tableau personneTab.
 */
-void parsePersonnesInfos(char *personnes, tab_personnes *tab_p) {
+int parsePersonnesInfos(char *personnes, tab_personnes *tab_p) {
     int i = 0, j = 0, k = 0;
-    char *nom = malloc(sizeof(char) * MAX_CHAR);
+    int nb_pers = 0;
+
     while (personnes[i] != '\0') {
-        if (estSeparateur(personnes[i]))
-            i++;
-        else {
-            while (personnes[i] != ',') {
+        if (!estSeparateur(personnes[i])) {
+            char *nom = malloc(sizeof(char) * MAX_CHAR);
+            while (!estSeparateur(personnes[i])) {
                 nom[j] = personnes[i];
                 i++;
                 j++;
             }
-            i++;  // On saute la virgule
+            nom[j] = '\0';
             if (tab_p->length == MAX_TAB) RAGE_QUIT("Trop de personnes");
             strcpy(tab_p->personne[tab_p->length]->nom, nom);
-            tab_p->length++;
-            j = 0;  // On réinitialise le compteur de caractères
+            tab_p->length++, nb_pers++, j = 0;
+            free(nom);
         }
+        i++;
     }
-    free(nom);
+
+    return nb_pers;
 }
 
 /*
@@ -42,27 +46,30 @@ void parsePersonnesInfos(char *personnes, tab_personnes *tab_p) {
     (exemple : [lille,lens,arras,douai,carvin,seclin],)
     et crée puis rempli le tableau villes.
 */
-void parseVillesInfos(char *listeVilles, char *villes[MAX_VILLE]) {
-    int i = 0, j = 0, k = 0;
+int parseVillesInfos(char *listeVilles, char *villes[MAX_VILLE]) {
+    int i = 0, j = 0, k = 0, nb_v = 0;
     char *ville = malloc(sizeof(char) * MAX_CHAR);
 
     while (listeVilles[i] != '\0') {
         if (estSeparateur(listeVilles[i]))
             i++;
         else {
-            while (listeVilles[i] != ',') {
+            while (!estSeparateur(listeVilles[i])) {
                 ville[j] = listeVilles[i];
                 i++;
                 j++;
             }
+            ville[j] = '\0';
             i++;
             if (k >= MAX_VILLE) RAGE_QUIT("Trop de villes");
+            villes[k] = malloc(sizeof(char) * j);
             strcpy(villes[k], ville);
-            k++;
-            j = 0;
+            k++, j = 0;
+            nb_v++;
         }
     }
     free(ville);
+    return nb_v;
 }
 
 /*
@@ -74,80 +81,117 @@ void parsePersonne(char *personneInfo, tab_personnes *tab_p) {
     int i = 0, j = 0, k = 0;
     char *nom = malloc(sizeof(char) * MAX_CHAR);
     char *ville = malloc(sizeof(char) * MAX_CHAR);
-    char *abonne = malloc(sizeof(char) * MAX_CHAR);
 
-    while (personneInfo[i] != '\0') {
-        if (estSeparateur(personneInfo[i]))
-            i++;
-        else {
-            // On récupère le nom
-            while (personneInfo[i] != ':') {
-                nom[j] = personneInfo[i];
-                i++;
-                j++;
-            }
-            j = 0;  // On réinitialise le compteur de caractères
+    while (estSeparateur(personneInfo[i])) i++;
 
-            // On rentre dans la liste d'abonnés
-            while (personneInfo[i] != '[') i++;
-            i++;  // On saute le crochet ouvrant
-
-            // On recupère la place de la personne dans le tableau
-            while (strcmp(tab_p->personne[k]->nom, nom) != 0 &&
-                   k < tab_p->length)
-                k++;
-            if (k >= tab_p->length) RAGE_QUIT("Personne inconnue");
-
-            // On récupère les abonnés
-            while (personneInfo[i] != ']') {
-                while (personneInfo[i] != ',') {
-                    abonne[j] = personneInfo[i];
-                    i++;
-                    j++;
-                }
-                j = 0;
-                // On recupère la place de la personne abonné dans le tableau
-                while (strcmp(tab_p->personne[j]->nom, abonne) != 0 &&
-                       j < tab_p->length)
-                    j++;
-                if (j >= tab_p->length) RAGE_QUIT("Personne inconnue");
-
-                // On ajoute l'abonné à la liste
-                Liste *tmp = malloc(sizeof(Liste));
-                tmp->personne = tab_p->personne[j];
-                tmp->suivant = tab_p->personne[k]->abonnements;
-                tab_p->personne[k]->abonnements = tmp;
-
-                // On fait le ménage
-                free(tmp);
-                j = 0;
-                i++;  // On saute la virgule
-            }
-            i++;  // On saute le crochet fermant et la
-            // j est deja a 0
-
-            // On avance
-            while (estSeparateur(personneInfo[i])) i++;
-
-            // On récupère la ville
-            while (personneInfo[i] != '}') {
-                ville[j] = personneInfo[i];
-                i++;
-                j++;
-            }
-            strcmp(tab_p->personne[k]->ville, ville);
-            i++;
-            j = 0;
-        }
+    // On récupère le nom
+    while (personneInfo[i] != ':') {
+        nom[j] = personneInfo[i];
+        i++;
+        j++;
     }
+    nom[j] = '\0';
+    // On rentre dans la liste d'abonnés
+    while (personneInfo[i] != '[') i++;
+    i++;  // On saute le crochet ouvrant
+
+    // On recupère la personne dans le tableau
+    Personne *p = get_personne(nom, tab_p);
+    if (p == NULL) RAGE_QUIT("Personne inconnue");
+
+    // On récupère les abonnés
+    while (personneInfo[i] != ']') {
+        j = 0;  // On réinitialise le compteur de caractères
+        char *nomAbonne = malloc(sizeof(char) * MAX_CHAR);
+        while (!estSeparateur(personneInfo[i])) {
+            nomAbonne[j] = personneInfo[i];
+            i++;
+            j++;
+        }
+        j = 0;  // personneInfo[i] est soit un crochet fermant, soit une virgule
+
+        // On recupère la personne abonné dans le tableau
+        Personne *abonne = get_personne(nomAbonne, tab_p);
+        if (abonne == NULL) RAGE_QUIT("Personne inconnue");
+
+        // On ajoute l'abonné à la liste
+        ajoute_abo(p, abonne);
+
+        // si on s'est arrété sur le crochet fermant, on sort de la boucle
+        if (personneInfo[i] == ']') break;
+        i++;  // sinon on saute la virgule
+
+        free(nomAbonne);
+    }
+    i += 2;  // On saute le crochet fermant et la virgule
+    j = 0;   // On réinitialise le compteur de caractères
+
+    // On avance (au cas ou il y aurait des espaces)
+    while (estSeparateur(personneInfo[i])) i++;
+
+    // On récupère la ville
+    while (personneInfo[i] != '}') {
+        ville[j] = personneInfo[i];
+        i++;
+        j++;
+    }
+    ville[j] = '\0';
+    strcpy(p->ville, ville);
+
+    // On libère la mémoire
     free(nom);
     free(ville);
-    free(abonne);
 }
 
 /*
     écrire une fonction parseVille qui prend une chaîne en entrée
     (de type : (lille,22,lens),) qui met à jour la matrice distancesVilles.
 */
-void parseVille(char *distanceVilleInfo,
-                int distancesVilles[MAX_VILLE][MAX_VILLE]);
+int chercheIndVille(char *ville, char *villes[MAX_VILLE]) {
+    int i = 0;
+    while (strcmp(ville, villes[i]) != 0 && i < MAX_VILLE) i++;
+    if (i >= MAX_VILLE) RAGE_QUIT("Ville inconnue");
+    return i;
+}
+
+void parseVille(char *distVilleInfo, char *villes[MAX_VILLE],
+                int distVilles[MAX_VILLE][MAX_VILLE]) {
+    // La premiere est la ville de depart, la deuxieme est la ville d'arrivee
+    int i = 0, j = 0, nb = 0, ligne = 0, colonne = 0;
+    char *mot1 = malloc(sizeof(char) * MAX_CHAR);
+    char *mot2 = malloc(sizeof(char) * MAX_CHAR);
+    char *mot3 = malloc(sizeof(char) * MAX_CHAR);
+
+    while (estSeparateur(distVilleInfo[i])) i++;
+    // On récupère la ville de départ
+    while (distVilleInfo[i] != ',') {
+        mot1[j] = distVilleInfo[i];
+        i++;
+        j++;
+    }
+    mot1[j] = '\0';
+
+    ligne = chercheIndVille(mot1, villes);
+    i++;    // On saute la virgule
+    j = 0;  // On réinitialise le compteur de caractères
+    // On recupère la distance
+    while (distVilleInfo[i] != ',') {
+        mot2[j] = distVilleInfo[i];
+        i++;
+        j++;
+    }
+    mot2[j] = '\0';
+    nb = atoi(mot2);
+    i++;    // On saute la virgule
+    j = 0;  // On réinitialise le compteur de caractères
+    while (distVilleInfo[i] != ')') {
+        mot3[j] = distVilleInfo[i];
+        i++;
+        j++;
+    }
+    mot3[j] = '\0';
+    colonne = chercheIndVille(mot3, villes);
+
+    distVilles[ligne][colonne] = nb;
+    distVilles[colonne][ligne] = nb;  // pour le fun
+}

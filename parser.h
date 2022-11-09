@@ -8,14 +8,14 @@
     (exemple : [kevin,karim,alice,paul,charlotte,gabriel,dalila],)
     et créé puis commence à remplir le tableau personneTab.
 */
-void parsePersonnesInfos(char *personnes, tab_personnes *tab_p);
+int parsePersonnesInfos(char *personnes, tab_personnes *tab_p);
 
 /*
     écrire une fonction parseVillesInfos qui prend la liste de villes
     (exemple : [lille,lens,arras,douai,carvin,seclin],)
     et crée puis rempli le tableau villes.
 */
-void parseVillesInfos(char *listeVilles, char *villes[MAX_VILLE]);
+int parseVillesInfos(char *listeVilles, char *villes[MAX_VILLE]);
 
 /*
     écrire une fonction parsePersonne qui prend une chaîne en entrée
@@ -28,7 +28,7 @@ void parsePersonne(char *personneInfo, tab_personnes *tab_p);
     écrire une fonction parseVille qui prend une chaîne en entrée
     (de type : (lille,22,lens),) qui met à jour la matrice distancesVilles.
 */
-void parseVille(char *distanceVilleInfo,
+void parseVille(char *distVilleInfo, char *villes[MAX_VILLE],
                 int distancesVilles[MAX_VILLE][MAX_VILLE]);
 
 #endif

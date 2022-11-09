@@ -69,18 +69,16 @@ void enleve_abo(Personne *p1, Personne *p2) {
 
 // d'afficher une personne : son nom, sa ville, le nom des personnes qu'il suit.
 
+void printListe(Liste *liste) {
+    if (liste == NULL) return;
+    printf("%s ", liste->personne->nom);
+    printListe(liste->suivant);
+}
+
 void print_personne(Personne *p) {
-    if (p == NULL) {
-        printf("Erreur : la personne n'existe pas\n");
-        return;
-    }
-    printf("Nom : %s\n", p->nom);
-    printf("Ville : %s\n", p->ville);
-    printf("Abonnements : ");
-    Liste *l = p->abonnements;
-    while (l != NULL) {
-        printf("%s ", l->personne->nom);
-        l = l->suivant;
-    }
+    printf("nom : %s\n", p->nom);
+    printf("ville : %s\n", p->ville);
+    printf("abonnements : ");
+    printListe(p->abonnements);
     printf("\n");
 }
