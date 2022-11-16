@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "fichier.h"
+#include "navigation.h"
 #include "parser.h"
 #include "reseau.h"
 #include "struct.h"
@@ -32,9 +33,31 @@ int main() {
             parseVille(chaine, villes, distance_villes);
         }
     }
-    printf("%d\n", distance_personne(tab_p->personne[0], tab_p->personne[3]));
+    fclose(f);  // On ferme le fichier
 
-    fclose(f);
+    printf("pas de prob avant distance\n");
+    int k;
+    if (!(k = distance_personne(tab_p->personne[0], tab_p->personne[5]))) {
+        RAGE_QUIT("Erreur lors du calcul de la distance générale\n");
+        return EXIT_FAILURE;
+    }
+    printf("-------%d-------\n", k);
+    printf("diste entre 2 personnes fait \n");
+    /*
+    printf("distance generale :\n");
+    int *dist;
+    if (!(dist = distance_general(tab_p))) {
+        RAGE_QUIT("Erreur lors du calcul de la distance générale\n");
+        return EXIT_FAILURE;
+    }
+    printf("diste entre generale fait \n");
+
+
+    print_distances(dist, tab_p);
+
+    printf("diste print fait \n");
+    free(dist);
+    */
     frees(tab_p, chaine, villes, nb_villes);
 
     // Les print qui vont bien

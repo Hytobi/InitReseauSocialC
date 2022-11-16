@@ -82,18 +82,3 @@ void print_personne(Personne *p) {
     printListe(p->abonnements);
     printf("\n");
 }
-
-// Distance entre p1 et p2
-int distance_personne(Personne *p1, Personne *p2) {
-    Liste *navig = p1->abonnements;
-    int distance = 1;
-    while (navig != NULL) {
-        if (navig->personne == p2) {
-            return distance;
-        }
-        distance++;
-        navig = navig->suivant;
-    }
-
-    return distance;
-}
