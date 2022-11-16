@@ -12,7 +12,7 @@ reseau.o : reseau.c struct.h reseau.h
 parser.o : parser.c struct.h parser.h
 	gcc -c parser.c
 
-fichier.o : fichier.c struct.h fichier.h
+fichier.o : fichier.c struct.h fichier.h reseau.h
 	gcc -c fichier.c
 
 navigation.o : navigation.c struct.h navigation.h

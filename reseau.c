@@ -82,3 +82,11 @@ void print_personne(Personne *p) {
     printListe(p->abonnements);
     printf("\n");
 }
+
+void afficher_tab_personnes(tab_personnes *tab_p) {
+    for (int i = 0; i < tab_p->length; i++) {
+        print_personne(tab_p->personne[i]);
+
+        printf("\n");
+    }
+}

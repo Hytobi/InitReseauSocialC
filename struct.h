@@ -13,17 +13,6 @@
         exit(EXIT_FAILURE);           \
     }
 
-/*
-Définissez les types et les variables nécessaires pour représenter les éléments
-suivants : -un tableau villes de chaînes de caractères une matrice
--distance_villes qui contient des entiers
--une structure Personne qui contient :
---un champ nom de type chaîne de caractères
---un champ ville de type chaîne de caractères
---un champ abonnements de type liste chaînée de Personne
--un tableau tab_personnes de pointeurs sur des Personne
-*/
-
 typedef struct _Personne Personne;
 typedef struct _ListeChainePersonne {
     Personne *personne;
@@ -40,6 +29,5 @@ typedef struct _tab_personnes {
     Personne **personne;
     int length;
 } tab_personnes;
-
 
 #endif
