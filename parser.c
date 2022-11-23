@@ -32,6 +32,7 @@ int parsePersonnesInfos(char *personnes, tab_personnes *tab_p) {
             nom[j] = '\0';
             if (tab_p->length == MAX_TAB) RAGE_QUIT("Trop de personnes");
             strcpy(tab_p->personne[tab_p->length]->nom, nom);
+            tab_p->personne[tab_p->length]->num_compo = 0;
             tab_p->length++, nb_pers++, j = 0;
             free(nom);
         }
@@ -108,7 +109,8 @@ void parsePersonne(char *personneInfo, tab_personnes *tab_p) {
             i++;
             j++;
         }
-        j = 0;  // personneInfo[i] est soit un crochet fermant, soit une virgule
+        nomAbonne[j] = '\0';
+        // personneInfo[i] est soit un crochet fermant, soit une virgule
 
         // On recupère la personne abonné dans le tableau
         Personne *abonne = get_personne(nomAbonne, tab_p);
@@ -194,4 +196,27 @@ void parseVille(char *distVilleInfo, char *villes[MAX_VILLE],
 
     distVilles[ligne][colonne] = nb;
     distVilles[colonne][ligne] = nb;  // pour le fun
+}
+
+void ajoute_Suivi(Personne *p1, Personne *p2) {
+    Liste *l = malloc(sizeof(Liste));
+    l->personne = p2;
+    l->suivant = p1->suivi_par;
+    p1->suivi_par = l;
+}
+
+void symetriser(tab_personnes *tab_p) {
+    for (int i = 0; i < tab_p->length; i++) {
+        Personne *p = tab_p->personne[i];
+        for (int j = 0; j < tab_p->length; j++) {
+            Personne *p2 = tab_p->personne[j];
+            Liste *parse = p2->abonnements;
+            while (parse != NULL) {
+                if (p == parse->personne) {
+                    ajoute_Suivi(p, p2);
+                }
+                parse = parse->suivant;
+            }
+        }
+    }
 }

@@ -42,7 +42,12 @@ int distance_personne(Personne *p1, Personne *p2, tab_personnes *tab_p) {
                 found = 1;
                 break;
             }
+            // On ajoute les abonnements de la personne à la liste
             tabListe[sizeTab++] = navig->personne->abonnements;
+            // Si on est dans une autre composante connexe on tourne en rond
+            // si le tableau est plein c'est qu'il n'y a pas de chemin
+            if (sizeTab == MAX_TAB * 10) return 0;
+            // On passe à la personne suivante
             ajoutTmp++;
             navig = navig->suivant;
         }

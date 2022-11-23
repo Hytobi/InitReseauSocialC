@@ -43,6 +43,7 @@ void frees(tab_personnes *tab_p, char *ch, char *villes[MAX_VILLE],
            int taille) {
     for (int i = 0; i < tab_p->length; i++) {
         free(tab_p->personne[i]->abonnements);
+        free(tab_p->personne[i]->suivi_par);
         free(tab_p->personne[i]);
     }
     free(tab_p->personne);

@@ -23,6 +23,8 @@ typedef struct _Personne {
     char nom[MAX_CHAR];
     char ville[MAX_CHAR];
     Liste *abonnements;
+    Liste *suivi_par;
+    int num_compo;
 } Personne;
 
 typedef struct _tab_personnes {

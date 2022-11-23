@@ -32,4 +32,6 @@ int chercheIndVille(char *ville, char *villes[MAX_VILLE]);
 void parseVille(char *distVilleInfo, char *villes[MAX_VILLE],
                 int distancesVilles[MAX_VILLE][MAX_VILLE]);
 
+void symetriser(tab_personnes *tab_p);
+
 #endif

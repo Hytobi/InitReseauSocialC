@@ -81,6 +81,9 @@ void print_personne(Personne *p) {
     printf("abonnements : ");
     printListe(p->abonnements);
     printf("\n");
+    printf("Suivi par : ");
+    printListe(p->suivi_par);
+    printf("\n");
 }
 
 void afficher_tab_personnes(tab_personnes *tab_p) {

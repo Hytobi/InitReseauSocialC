@@ -18,5 +18,6 @@ void enleve_abo(Personne *p1, Personne *p2);
 
 // afficher une personne : son nom, sa ville, le nom des personnes qu'il suit.
 void afficher_tab_personnes(tab_personnes *tab_p);
+void print_personne(Personne *p);
 
 #endif
