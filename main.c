@@ -14,7 +14,7 @@ int main() {
     int distance_villes[MAX_VILLE][MAX_VILLE];
     char *chaine;
     int phase = 0, nb_pers = 0, nb_villes = 0, copy;
-    int *tab_composante;
+    int *tab_composante, *tab_composante_fc;
 
     tab_personnes *tab_p = init_tab_personnes();
     FILE *f = fopen("data/reseau2.txt", "r");
@@ -50,8 +50,19 @@ int main() {
             distance_personne(tab_p->personne[0], tab_p->personne[1], tab_p));
         printf("\n");
         print_distances(distance_general(tab_p), tab_p);
+        printf("\n");
+
         tab_composante = calcule_les_composantes_connexes(tab_p, nb_pers);
         affiche_les_composantes(tab_p, tab_composante, nb_pers);
+
+        // On remet a zero le num_compo pour la suite
+        for (int i = 0; i < nb_pers; i++) {
+            tab_p->personne[i]->num_compo = 0;
+        }
+
+        tab_composante_fc =
+            calcule_les_composantes_fortement_connexes(tab_p, nb_pers);
+        affiche_les_cfc(tab_p, tab_composante_fc, nb_pers);
     }
 
     free(tab_composante);

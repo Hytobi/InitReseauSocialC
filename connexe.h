@@ -24,4 +24,12 @@ void affiche_une_composante(tab_personnes *tab_p, int num_compo);
 /*qui affiche toutes les composantes. */
 void affiche_les_composantes(tab_personnes *tab_p, int *tab, int taille);
 
+// Dernière etape :
+void calcule_une_composante_fortement_connexe(Personne *p, int num_compo);
+int *calcule_les_composantes_fortement_connexes(tab_personnes *tab_p, int nb);
+void affiche_les_cfc(tab_personnes *tab_p, int *tab, int taille);
+
+void calcule_les_cfc_Tarjan(tab_personnes *tab_p, int nb);
+void affiche_les_cfc_Tarjan(tab_personnes *tab_p, int *tab, int taille);
+
 #endif

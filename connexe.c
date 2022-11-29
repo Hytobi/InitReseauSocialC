@@ -79,3 +79,52 @@ void affiche_les_composantes(tab_personnes *tab_p, int *tab, int taille) {
         printf("\n");
     }
 }
+
+void calcule_une_composante_fortement_connexe(Personne *p, int num_compo) {
+    Liste *liste = p->abonnements;  // G
+    Liste *liste2 = p->suivi_par;   // G-1
+
+    while (liste != NULL) {
+        if (liste->personne->num_compo == 0) {
+            while (liste2 != NULL) {
+                if (liste2->personne == liste->personne) {
+                    liste2->personne->num_compo = num_compo;
+                }
+                liste2 = liste2->suivant;
+            }
+        }
+        liste2 = p->suivi_par;
+        liste = liste->suivant;
+    }
+}
+
+int *calcule_les_composantes_fortement_connexes(tab_personnes *tab_p, int nb) {
+    int i;
+    int *tab_composante = malloc(sizeof(int) * nb);
+    for (i = 0; i < nb; i++) {
+        tab_composante[i] = -1;
+    }
+    int num_compo = 1;
+    for (i = 0; i < nb; i++) {
+        if (tab_composante[i] == -1) {
+            if (tab_p->personne[i]->num_compo != 0) {
+                tab_composante[i] = tab_p->personne[i]->num_compo;
+            } else {
+                calcule_une_composante_fortement_connexe(tab_p->personne[i],
+                                                         num_compo);
+                tab_composante[i] = num_compo;
+                num_compo++;
+            }
+        }
+    }
+    return tab_composante;
+}
+void affiche_les_cfc(tab_personnes *tab_p, int *tab, int taille) {
+    int i, len = max(tab, taille);
+    printf("Il y a %d composantes fortement connexes\n", len);
+    for (i = 1; i < len + 1; i++) {
+        printf("La composante numéro %d est composée de :\n", i);
+        affiche_une_composante(tab_p, i);
+        printf("\n");
+    }
+}
