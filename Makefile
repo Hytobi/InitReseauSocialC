@@ -10,6 +10,7 @@ CFLAGS ?= -Wall -MMD -O3 -DNDEBUG
 endif
 
 LDFLAGS=
+$(shell [ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR))
 
 OBJS := $(shell find $(SRC_DIR) -name "*.c" |sed 's/.c$$/.o/g' | sed 's/$(SRC_DIR)/$(OBJ_DIR)/g')
 DEPS := $(OBJS:.o=.d)
@@ -21,7 +22,7 @@ $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR) 
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:

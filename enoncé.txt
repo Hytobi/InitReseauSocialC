@@ -48,3 +48,80 @@ Si on cherche à calculer la distance d'une personne A à une personne B, l'idé
 Écrire une fonction distance_personnes qui prend deux personnes p1 et p2 en paramètres et calcule la distance de p1 à p2.
 
 Écrire une fonction distance_moyenne qui calcule la distance moyenne entre deux personnes dans un réseau (on ne prendra pas en compte dans le calcul les personnes qui ne sont pas en lien).
+
+
+Etape 2
+
+Symétrisation d'un graphe orienté
+
+Une composante connexe est un ensemble de neuds dans un graphe tel que, quel que soit le couple de noeuds (n1,n2) dans cet ensemble, il existe une chaîne dans cet ensemble permettant de relier ces deux noeuds. Une chaîne considère tous les arcs définis dans le graphe, quelque soit leur orientation.
+
+Dans les exemples que nous traitons, le graphe des personnes est un graphe orienté. Dans un premier temps, nous allons symétriser ce graphe pour pouvoir naviguer aussi bien d'une personne aux personnes à qui elle est abonnée, que d'une personne vers les personnes qui la suivent.
+Modifiez la structure Personne pour lui ajouter un champ suivi_par (liste chaînée de personnes).
+Écrivez la fonction symetriser qui met à jour le champ suivi_par de toutes les personnes d'un graphe.
+Composantes connexes
+
+On souhaite maintenant connaître le nombre et la composition de toutes les composantes connexes d'un graphe. Pour trouver une composante connexe, il suffit de partir d'un noeud et de trouver tous les noeuds accessibles (par les_abos ou par suivi_par) du graphe.
+
+Pour trouver toutes les composantes connexes, il suffit de chercher une composante connexe, puis de choisir un noeud qui n'en fait pas partie et de recommencer le processus, jusqu'à ce que chaque noeud soit repéré comme appartenant à une composante connexe.
+Définissez un tableau tab_composantes qui contiendra le numéro de la composante connexe à laquelle appartient chaque noeud.
+Écrivez la fonction calcule_une_composante_connexe(int num_compo) qui calcule une composante connexe sur les noeuds qui ne sont pas déjà rattachés et leur attribue num_compo comme numéro de composante.
+Écrivez la fonction calcule_les_composantes_connexes() qui calcule toutes les composantes connexes du graphe.Le tableau tab_composantes doit être initialisé à -1.
+Écrivez la fonction affiche une composante(int num_compo) qui affiche tous les noeuds de la composante numéro num_compo. Pour chaque personne, on veut connaître son nom, sa ville, les noms des personnes à qui elle est abonnée et les noms des personnes qui la suivent.
+Écrivez la fonction affiche_les_composantes() qui affiche toutes les composantes. 
+
+Etape 3
+
+Graphes - Composantes fortements connexes
+
+Une composante fortement connexe, dans un graphe orienté, est un ensemble de noeuds tels que quelque soit le couple de noeuds (n1,n2) pris dans cet ensemble, il existe un chemin (arc orienté) pour aller de n1 à n2 en passant par des noeuds de l'ensemble. On considère donc maintenant notre graphe de personnes orienté dans le sens des arcs des abonnements.
+Un premier calcul simple
+Définissez un tableau tab_composantes_fc qui contiendra le numéro de la composante fortement connexe à laquelle appartient chaque noeud.
+
+Rappel : La composante fortement connexe C qui contient le noeud S contient tous les noeuds qui sont dans descendants(S) ∩ ascendants(S).
+Écrivez la fonction calcule_une_composante_fortement_connexe(int num_compo) qui calcule une composante fortement connexe sur les noeuds qui ne sont pas déjà rattachés et leur attribue num_compo comme numéro de composante.
+Écrivez la fonction calcule_les_composantes_fortement_connexes() qui calcule toutes les composantes fortement connexes du graphe.Le tableau tab_composantes doit être initialisé à -1.
+Écrivez la fonction affiche_les_cfc qui affiche les différentes composantes fortement connexes d'un graphe.
+L'algorithme de Tarjan
+
+L'algorithme de Tarjan est un algorithme linéaire sur le nombre de noeuds qui a été proposé par Robert Tarjan en 1972. Il repose sur un parcours en profondeur d'abord des noeuds d'un graphe.
+
+L'idée est la suivante : dans une composante fortement connexe, quelque soit le noeud que vous choisissez, il existe un chemin qui permet de revenir à ce noeud. Donc, quel que soit le noeud qu'on choisisse, tous ses descendants qui sont sur un chemin qui revient vers lui appartiennent à la même composante fortement connexe que ce noeud. On va donc faire un parcours en profondeur d'abord des descendants d'un noeud, en empilant tous les noeuds rencontrés. Chaque noeud est étiqueté par son numéro d'ordre dans le parcours (ce qu'on appelera le rang d'un noeud). Lorsque dans un parcours des fils d'un noeud n1, on rencontrera un noeud n2 déjà présent sur la pile, alors on dira que le rang d'attache de ce noeud n1 est le rang du noeud n2 présent sur la pile. Cela veut dire que tous les noeuds présents sur la pile entre n2 et n1 appartiennent à la même composante connexe.
+
+Pour l'algorithme, nous avons besoin d'un compteur de rang r et d'un compteur de composantes num_compo. Pour chaque noeud, nous allons calculer son rang, son rang d'attache rang_att, et son numéro de composante compo. On doit maintenir une pile des noeuds visités.
+
+def calcul_cfc(graphe) :
+    deja_vus <- ensemble vide
+    r <- 0
+    num_compo <- 0
+    Pile p = Pile()
+    tant que |deja_vus| < |sommets(graphe)| faire
+         choisir un noeud n dans (sommets(graphe) - deja_vus)
+         parcours_descendants(n)
+    fin tant que
+
+def parcours_descendants(s) :
+    empiler(s,p)
+    deja_vus <- deja_vus + {s}
+    r <- r+1
+    rang(s) <- r
+    rang_att(s) <- r
+    pour chaque successeur x de s faire
+         si x n'est pas dans deja_vus alors
+            parcours_descendants(x)
+            rang_att(s) = min(rang_att(s),rang_att(x))
+         sinon si x est dans la pile p alors
+            rang_att(s) = min(rang(x),rang_att(s))
+         fin si
+    fin pour
+    si rang_att(s) == rang(s) alors
+       num_compo <- num_compo + 1
+       # s est un point d'entrée d'une composante connexe
+       faire
+            n = depiler(p)
+            compo(n) = num_compo
+       jusqu'à n == s
+    fin si
+
+Écrivez la fonction calcule_les_cfc_Tarjan qui implémente l'algorithme de Tarjan.
+Écrivez la fonction affiche_les_cfc_Tarjan qui affiche toutes les composantes fortement connexes d'un graphe (calculées avec l'algorithme de Tarjan). 

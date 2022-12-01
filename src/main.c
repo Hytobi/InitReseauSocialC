@@ -17,7 +17,7 @@ int main() {
     int *tab_composante, *tab_composante_fc;
 
     tab_personnes *tab_p = init_tab_personnes();
-    FILE *f = fopen("data/reseau2.txt", "r");
+    FILE *f = fopen("src/data/reseau2.txt", "r");
     if (f == NULL) RAGE_QUIT("Impossible d'ouvrir le fichier");
 
     while ((chaine = lire_chaine(f)) != NULL) {
@@ -39,7 +39,7 @@ int main() {
     fclose(f);  // On ferme le fichier
 
     // Les print qui vont bien
-    int print = 1;
+    int print = 0;
     if (print) {
         symetriser(tab_p);
         afficher_tab_personnes(tab_p);

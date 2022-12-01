@@ -1,0 +1,5 @@
+@author : Patrice PLOUVIN
+
+Pour le run : ./exec
+
+Tout les test sont a la fin du main, il suffi de passer une variable a 1 et de recompiler avec "make" puis "./exec"
