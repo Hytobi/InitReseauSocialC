@@ -18,7 +18,7 @@ int estSeparateur(char c) {
     et créé puis commence à remplir le tableau personneTab.
 */
 int parsePersonnesInfos(char *personnes, tab_personnes *tab_p) {
-    int i = 0, j = 0, k = 0;
+    int i = 0, j = 0;
     int nb_pers = 0;
 
     while (personnes[i] != '\0') {
@@ -79,7 +79,7 @@ int parseVillesInfos(char *listeVilles, char *villes[MAX_VILLE]) {
     et qui ajoute les infos de la personne ainsi que ses abonnements.
 */
 void parsePersonne(char *personneInfo, tab_personnes *tab_p) {
-    int i = 0, j = 0, k = 0;
+    int i = 0, j = 0;
     char *nom = malloc(sizeof(char) * MAX_CHAR);
     char *ville = malloc(sizeof(char) * MAX_CHAR);
 

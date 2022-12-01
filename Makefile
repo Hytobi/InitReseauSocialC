@@ -1,31 +1,34 @@
-all : exec  clean run mrproper
+CC := gcc
+SRC_DIR ?= src
+OBJ_DIR ?= obj
+DEBUG ?= 1
 
-exec : reseau.o parser.o main.o fichier.o navigation.o connexe.o
-	gcc -o exec main.o reseau.o parser.o fichier.o navigation.o connexe.o
+ifeq '$(DEBUG)' '1'
+CFLAGS ?= -Wall -MMD -g
+else
+CFLAGS ?= -Wall -MMD -O3 -DNDEBUG
+endif
 
-main.o : main.c struct.h reseau.h fichier.h navigation.h parser.h connexe.h
-	gcc -c main.c
+LDFLAGS=
 
-reseau.o : reseau.c struct.h reseau.h
-	gcc -c reseau.c
+OBJS := $(shell find $(SRC_DIR) -name "*.c" |sed 's/.c$$/.o/g' | sed 's/$(SRC_DIR)/$(OBJ_DIR)/g')
+DEPS := $(OBJS:.o=.d)
+TARGET ?= exec
 
-parser.o : parser.c struct.h parser.h
-	gcc -c parser.c
+all: $(TARGET)
 
-fichier.o : fichier.c struct.h fichier.h reseau.h
-	gcc -c fichier.c
+$(TARGET): $(OBJS)	
+	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-navigation.o : navigation.c struct.h navigation.h
-	gcc -c navigation.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
-connexe.o : connexe.c struct.h connexe.h reseau.h
-	gcc -c connexe.c
+clean:
+	rm -rf $(OBJ_DIR)
 
-clean :
-	rm -f *.o
+mrproper: clean
+	rm -f $(TARGET)
 
-run :
-	./exec
 
-mrproper : clean
-	rm -f exec
+-include $(DEPS)
